@@ -1,10 +1,9 @@
 const bookShelf = require('./bookshelf');
-// const { nanoid } = require('nanoid');
 
 const addBook = (request, h) => {
   const { payload } = request;
 
-  if (payload.name === undefined) {
+  if (!payload.name) {
     return h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku'
@@ -17,15 +16,6 @@ const addBook = (request, h) => {
       message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'
     }).code(400);
   }
-
-  // const id = nanoid(16);
-  // const finished = payload.pageCount === payload.readPage;
-  // const insertedAt = new Date().toISOString();
-  // const updatedAt = insertedAt;
-
-  // const newBook = { ...payload, id, finished, insertedAt, updatedAt };
-
-  // bookShelf.push(newBook);
 
   const newBook = bookShelf.pushBook({ ...payload });
 
@@ -60,7 +50,7 @@ const getABook = (request, h) => {
   const { bookId } = request.params;
   const book = bookShelf.find(book => book.id === bookId);
 
-  if (book === undefined) {
+  if (!book) {
     return h.response({
       status: 'fail',
       message: 'Buku tidak ditemukan'
@@ -79,7 +69,7 @@ const updateBook = (request, h) => {
   const { bookId } = request.params;
   const { payload } = request;
 
-  if (payload.name === undefined) {
+  if (!payload.name) {
     return h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. Mohon isi nama buku'
@@ -93,24 +83,14 @@ const updateBook = (request, h) => {
     }).code(400);
   }
 
-  const bookIndex = bookShelf.findIndex(book => book.id === bookId);
+  const book = bookShelf.pushBook({ ...payload, id: bookId });
 
-  if (bookIndex === -1) {
+  if (!book) {
     return h.response({
       status: 'fail',
       message: 'Gagal memperbarui buku. Id tidak ditemukan'
     }).code(404);
   }
-
-  const updatedAt = new Date().toISOString();
-  const finished = payload.readPage === payload.pageCount;
-
-  bookShelf[bookIndex] = {
-    ...bookShelf[bookIndex],
-    ...payload,
-    updatedAt,
-    finished
-  };
 
   return h.response({
     status: 'success',
