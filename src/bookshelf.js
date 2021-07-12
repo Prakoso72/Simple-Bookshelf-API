@@ -1,4 +1,4 @@
-// const { nanoid } = require('nanoid');
+const { nanoid } = require('nanoid');
 
 const bookShelf = [];
 
@@ -40,62 +40,69 @@ bookShelf.filterBooks = ({ name, reading, finished }) => {
 
   return books;
 };
-// bookShelf.pushBook = ({
-//   name,
-//   year,
-//   author,
-//   summary,
-//   publisher,
-//   pageCount,
-//   readPage,
-//   reading,
-//   id
-// }) => {
-//   const finished = pageCount === readPage;
-//   const updatedAt = new Date().toISOString();
-//   let book;
 
-//   if (id === undefined) {
-//     const insertedAt = updatedAt;
-//     id = nanoid(16);
+bookShelf.pushBook = ({
+  name,
+  year,
+  author,
+  summary,
+  publisher,
+  pageCount,
+  readPage,
+  reading,
+  id
+}) => {
+  const finished = pageCount === readPage;
+  const updatedAt = new Date().toISOString();
+  let book;
 
-//     book = {
-//       id,
-//       name,
-//       year,
-//       author,
-//       summary,
-//       publisher,
-//       pageCount,
-//       readPage,
-//       finished,
-//       reading,
-//       insertedAt,
-//       updatedAt
-//     };
+  if (id === undefined) {
+    const insertedAt = updatedAt;
+    id = nanoid(16);
 
-//     bookShelf.push(book);
-//   } else {
-//     const bookIndex = bookShelf.findIndex(book => book.id === id);
+    book = {
+      id,
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      finished,
+      reading,
+      insertedAt,
+      updatedAt
+    };
 
-//     book = {
-//       ...bookShelf[bookIndex],
-//       name,
-//       year,
-//       author,
-//       summary,
-//       publisher,
-//       pageCount,
-//       readPage,
-//       reading,
-//       updatedAt,
-//       finished
-//     };
+    bookShelf.push(book);
+  } else {
+    const bookIndex = bookShelf.findIndex(book => book.id === id);
 
-//     bookShelf[bookIndex] = book;
-//   }
+    book = {
+      ...bookShelf[bookIndex],
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      reading,
+      updatedAt,
+      finished
+    };
 
-//   return book;
-// };
+    bookShelf[bookIndex] = book;
+  }
+
+  return book;
+};
+
+bookShelf.removeBook = bookId => {
+  const bookIndex = bookShelf.findIndex(book => book.id === bookId);
+  bookShelf.splice(bookIndex, 1);
+  return bookIndex;
+};
 
 module.exports = bookShelf;

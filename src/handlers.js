@@ -1,5 +1,5 @@
 const bookShelf = require('./bookshelf');
-const { nanoid } = require('nanoid');
+// const { nanoid } = require('nanoid');
 
 const addBook = (request, h) => {
   const { payload } = request;
@@ -18,21 +18,23 @@ const addBook = (request, h) => {
     }).code(400);
   }
 
-  const id = nanoid(16);
-  const finished = payload.pageCount === payload.readPage;
-  const insertedAt = new Date().toISOString();
-  const updatedAt = insertedAt;
+  // const id = nanoid(16);
+  // const finished = payload.pageCount === payload.readPage;
+  // const insertedAt = new Date().toISOString();
+  // const updatedAt = insertedAt;
 
-  const newBook = { ...payload, id, finished, insertedAt, updatedAt };
+  // const newBook = { ...payload, id, finished, insertedAt, updatedAt };
 
-  bookShelf.push(newBook);
+  // bookShelf.push(newBook);
+
+  const newBook = bookShelf.pushBook({ ...payload });
 
   if (bookShelf.some(book => book === newBook)) {
     return h.response({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
       data: {
-        bookId: id
+        bookId: newBook.id
       }
     }).code(201);
   }
@@ -118,7 +120,7 @@ const updateBook = (request, h) => {
 
 const deleteBook = (request, h) => {
   const { bookId } = request.params;
-  const bookIndex = bookShelf.findIndex(book => book.id === bookId);
+  const bookIndex = bookShelf.removeBook(bookId);
 
   if (bookIndex === -1) {
     return h.response({
@@ -126,8 +128,6 @@ const deleteBook = (request, h) => {
       message: 'Buku gagal dihapus. Id tidak ditemukan'
     }).code(404);
   }
-
-  bookShelf.splice(bookIndex, 1);
 
   return h.response({
     status: 'success',
