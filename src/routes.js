@@ -31,5 +31,15 @@ module.exports = [
     method: 'DELETE',
     path: '/books/{bookId}',
     handler: deleteBook
+  },
+  {
+    method: '*',
+    path: '/{any*}',
+    handler: (request, h) => {
+      return h.response({
+        status: 'fail',
+        message: 'Page Not Found!'
+      }).code(404);
+    }
   }
 ];
