@@ -54,13 +54,12 @@ bookShelf.pushBook = ({
 }) => {
   const finished = pageCount === readPage;
   const updatedAt = new Date().toISOString();
-  let book;
 
   if (!id) {
     const insertedAt = updatedAt;
     id = nanoid(16);
 
-    book = {
+    const newBook = {
       id,
       name,
       year,
@@ -75,12 +74,14 @@ bookShelf.pushBook = ({
       updatedAt
     };
 
-    bookShelf.push(book);
+    bookShelf.push(newBook);
+
+    if (bookShelf.some(book => book === newBook)) return id;
   } else {
     const bookIndex = bookShelf.findIndex(book => book.id === id);
 
     if (bookIndex !== -1) {
-      book = {
+      const book = {
         ...bookShelf[bookIndex],
         name,
         year,
@@ -95,10 +96,10 @@ bookShelf.pushBook = ({
       };
 
       bookShelf[bookIndex] = book;
+      return true;
     }
+    return false;
   }
-
-  return book;
 };
 
 bookShelf.removeBook = bookId => {
